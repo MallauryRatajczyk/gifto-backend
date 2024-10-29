@@ -22,9 +22,9 @@ router.get('/', (req, res) => {
     } else {
       res.json({ result: false, error: 'Aucun utilisateurs trouvés.' });
     }
-  }).catch (err => {
+  }).catch(err => {
     res.json({ error: err.message });
-})
+  })
 });
 
 // GET user/:id renvoie un utilisateur en le recherchant par son id ===> test TC ok
@@ -35,9 +35,9 @@ router.get('/:id', (req, res) => {
     } else {
       res.json({ result: false, error: 'Utilisateur non trouvé.' });
     }
-  }).catch (err => {
+  }).catch(err => {
     res.json({ error: err.message });
-})
+  })
 });
 
 // POST user/enregistrer pour l'enregistrement d'un nouvel utilisateur. ===> test TC ok
@@ -66,9 +66,9 @@ router.post('/enregistrer', (req, res) => {
     if (newDoc) {
       res.json({ result: true, token: newDoc.token });
     }
-  }).catch (err => {
+  }).catch(err => {
     res.json({ error: err.message });
-})
+  })
 });
 
 // POST user/login pour la connexion d'un utilisateur qui a déjà son compte. ===> test TC ok
@@ -77,15 +77,21 @@ router.post('/login', (req, res) => {
     res.json({ result: false, error: 'Champs non saisi.' });
     return;
   }
-  User.findOne({ email: req.body.email }).then(data => {
+  //Recherche soit sur l'email soit sur l'username
+  User.findOne({
+    $or: [
+      { email: req.body.email },
+      { username: req.body.username }
+    ]
+  }).then(data => {
     if (data && bcrypt.compareSync(req.body.password, data.password)) {
       res.json({ result: true, token: data.token });
     } else {
       res.json({ result: false, error: 'Utilisateur non trouvé ou mot de passe invalide.' });
     }
-  }).catch (err => {
+  }).catch(err => {
     res.json({ error: err.message });
-})
+  })
 });
 
 // PUT user/:id pour mettre à jour les informations d'un utilisateur.
@@ -103,25 +109,25 @@ router.put('/:id', (req, res) => {
       if (updatedUser) {
         res.json({ result: true, user: updatedUser });
       }
-    }).catch (err => {
+    }).catch(err => {
       res.json({ error: err.message });
-  })
+    })
 });
 
 // PUT user/:id/historique, mettre à jour l'historique d'un utilisateur
-router.put('/:id/historique', async(req, res) => { //callback donc fonction asynchrone
-  const demandes = await Demande.find({expediteur: req.params.id}); //attend que le tableau soit renvoyé
-  const demand = await Demande.find({destinataire: req.params.id}); //attend que le tableau soit renvoyé
+router.put('/:id/historique', async (req, res) => { //callback donc fonction asynchrone
+  const demandes = await Demande.find({ expediteur: req.params.id }); //attend que le tableau soit renvoyé
+  const demand = await Demande.find({ destinataire: req.params.id }); //attend que le tableau soit renvoyé
   const historique = demandes + demand;
-  User.findByIdAndUpdate(req.params.id, {historique}).then(user => {
+  User.findByIdAndUpdate(req.params.id, { historique }).then(user => {
     if (user) {
       res.json({ result: true, user });
     } else {
       res.json({ result: false, error: 'Utilisateur non trouvé.' });
     }
-  }).catch (err => {
+  }).catch(err => {
     res.json({ error: err.message });
-})
+  })
 });
 
 // DELETE user/:id.
@@ -133,9 +139,9 @@ router.delete('/:id', async (req, res) => {
     } else {
       res.json({ result: false })
     }
-  }).catch (err => {
+  }).catch(err => {
     res.json({ error: err.message });
-})
+  })
 });
 
 
