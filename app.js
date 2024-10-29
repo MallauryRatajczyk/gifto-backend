@@ -25,10 +25,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
-<<<<<<< HEAD
 app.use('/demande', demandeRouter);
-=======
 app.use('/categories', categoriesRouter);
->>>>>>> a1867c8f916240b1d16e4fca72c82488aff2e99d
 
 module.exports = app;
