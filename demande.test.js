@@ -1,4 +1,8 @@
-const { postDemande, getAllDemande} = require('./app');
+const request = require('supertest');
+const app = require('./app'); // Import the Express app
+const Demande = require('./models/demande');
+
+// const { postDemande, getAllDemande} = require('./app');
 
 
 // test pour faire une demande
