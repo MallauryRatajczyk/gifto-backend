@@ -12,6 +12,7 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var demandeRouter = require('./routes/demande')
 var categoriesRouter = require('./routes/categories');
+var itemRouter = require('./routes/item');
 
 var app = express();
 const cors = require('cors');
@@ -27,5 +28,5 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/demande', demandeRouter);
 app.use('/categories', categoriesRouter);
-
+app.use('/item', itemRouter);
 module.exports = app;

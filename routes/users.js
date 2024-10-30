@@ -40,6 +40,19 @@ router.get('/:id', (req, res) => {
   })
 });
 
+// GET user/:tokenrenvoie un utilisateur en le recherchant par son token 
+router.get('/:token', (req, res) => {
+  User.findOne({ token: req.params.token }).then(data => {
+    if (data) {
+      res.json({ result: true, user: { nom: data.nom, prenom: data.prenom, email: data.email, username: data.username } });
+    } else {
+      res.json({ result: false, error: 'Utilisateur non trouvé.' });
+    }
+  }).catch(err => {
+    res.json({ error: err.message });
+  })
+});
+
 // POST user/enregistrer pour l'enregistrement d'un nouvel utilisateur. ===> test TC ok
 router.post('/enregistrer', (req, res) => {
   if (!checkBody(req.body, ['nom', 'prenom', 'age', 'email', 'password', 'username'])) {
