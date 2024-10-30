@@ -10,10 +10,10 @@ const { checkBody } = require('../modules/checkBody');
 
 router.post('/', async (req, res) => {
     if (!checkBody(req.body, ['token'])) {
-      res.json({ result: false, error: 'Missing or empty fields' });
-      return;
+        res.json({ result: false, error: 'Missing or empty fields' });
+        return;
     }
-  
+
     try {
         const user = await User.findOne({ token: req.body.token });
         if (!user) {
@@ -62,6 +62,22 @@ router.get('/', async (req, res) => {
             return res.json({ error: 'Requests not found' });
         }
         res.json(demandes);
+    } catch (err) {
+        res.json({ error: err.message });
+    }
+});
+
+// récupérer toutes les demandes d'un utilisateur
+
+router.get('/mesdemandes/:id', async (req, res) => {
+    try {
+        const demandesRecus = await Demande.find({ destinataire: req.params.id });
+        const demandesFaites = await Demande.find({ expediteur: req.params.id });
+        const toutesDemandes = demandesRecus + demandesFaites
+        if (!toutesDemandes) {
+            return res.json({ error: 'Requests not found' });
+        }
+        res.json(toutesDemandes);
     } catch (err) {
         res.json({ error: err.message });
     }
@@ -116,18 +132,18 @@ router.delete('/:id', async (req, res) => {
             res.json({ result: false, error: 'User not found' });
             return;
         }
-    
-      const deletedDemande = await Demande.findByIdAndDelete(req.params.id);
-  
-      if (!deletedDemande) {
-        return res.json({ error: 'Demande not found' });
-      }
-  
-      res.json({ message: 'request deleted successfully' });
+
+        const deletedDemande = await Demande.findByIdAndDelete(req.params.id);
+
+        if (!deletedDemande) {
+            return res.json({ error: 'Demande not found' });
+        }
+
+        res.json({ message: 'request deleted successfully' });
     } catch (err) {
-      res.json({ error: err.message });
+        res.json({ error: err.message });
     }
-  });
+});
 
 
 module.exports = router;
