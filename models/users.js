@@ -1,12 +1,14 @@
 const mongoose = require('mongoose');
 
 const userSchema = mongoose.Schema({
-  nom: String,
-  prenom: String,
-  email: { type: String, unique: true, match: /\S+@\S+.\S+/ },
-  password: String,
+  nom: { type: String, required: true },
+  prenom: { type: String, required: true },
+  email: { type: String, unique: true, match: /\S+@\S+.\S+/, required: true }, // email unique normalement pas besoin du findOne dans la création
+  username: { type: String, required: true, minlength: 4, maxlength: 15, unique: true },
+  age: { type: Date, required: true },
+  password: { type: String, required: true, minlength: 8 },
   token: String,
-  create_at: Date,
+  create_at: { type: Date, default: Date.now() },
   update_at: Date,
   tel: Number,
   historique: { type: mongoose.Schema.Types.ObjectId, ref: 'demandes' }, // foreign Key des demandes
