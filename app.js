@@ -15,6 +15,8 @@ var categoriesRouter = require('./routes/categories');
 var itemRouter = require('./routes/item');
 
 var app = express();
+const fileUpload = require('express-fileupload');
+app.use(fileUpload());
 const cors = require('cors');
 
 app.use(cors());
