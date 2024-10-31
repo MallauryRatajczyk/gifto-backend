@@ -44,7 +44,7 @@ router.get('/:id', (req, res) => {
 router.get('/:token', (req, res) => {
   User.findOne({ token: req.params.token }).then(data => {
     if (data) {
-      res.json({ result: true, user: { nom: data.nom, prenom: data.prenom, email: data.email, username: data.username } });
+      res.json({ result: true, user: { id: data._id, nom: data.nom, prenom: data.prenom, email: data.email, username: data.username } });
     } else {
       res.json({ result: false, error: 'Utilisateur non trouvé.' });
     }
@@ -91,14 +91,12 @@ router.post('/login', (req, res) => {
     return;
   }
   //Recherche soit sur l'email soit sur l'username
-  User.findOne({
-    $or: [
-      { email: req.body.email },
-      { username: req.body.username }
-    ]
-  }).then(data => {
+  User.findOne(
+    { email: req.body.email },
+  ).then(data => {
     if (data && bcrypt.compareSync(req.body.password, data.password)) {
-      res.json({ result: true, token: data.token });
+
+      res.json({ result: true, token: data.token, username: data.username });
     } else {
       res.json({ result: false, error: 'Utilisateur non trouvé ou mot de passe invalide.' });
     }

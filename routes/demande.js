@@ -21,12 +21,13 @@ router.post('/', async (req, res) => {
             return;
         }
 
-        const { expediteur, destinataire, type, message } = req.body;
+        const { possesseur, demandeur, type, message, item } = req.body;
         const newDemande = new Demande({
-            expediteur,
-            destinataire,
+            demandeur,
+            item,
+            possesseur,
             type,
-            message,
+            message: [{ de: demandeur, a: possesseur, message: message }],
         });
 
         const newDoc = await newDemande.save();
@@ -45,7 +46,7 @@ router.get('/:id', async (req, res) => {
         if (!demande) {
             return res.json({ error: 'Request not found' });
         }
-        res.json(demande);
+        res.json({ result: true, demande: demande });
     } catch (err) {
         res.json({ error: err.message });
     }
@@ -71,13 +72,14 @@ router.get('/', async (req, res) => {
 
 router.get('/mesdemandes/:id', async (req, res) => {
     try {
-        const demandesRecus = await Demande.find({ destinataire: req.params.id });
-        const demandesFaites = await Demande.find({ expediteur: req.params.id });
-        const toutesDemandes = demandesRecus + demandesFaites
+        const demandesRecus = await Demande.find({ possesseur: req.params.id }).populate('item');
+        const demandesFaites = await Demande.find({ demandeur: req.params.id }).populate('item');
+        console.log(demandesFaites)
+        let toutesDemandes = demandesFaites.concat(demandesRecus)
         if (!toutesDemandes) {
             return res.json({ error: 'Requests not found' });
         }
-        res.json(toutesDemandes);
+        res.json({ result: true, demandes: toutesDemandes });
     } catch (err) {
         res.json({ error: err.message });
     }
@@ -98,11 +100,11 @@ router.put('/:id', async (req, res) => {
             res.json({ result: false, error: 'User not found' });
             return;
         }
-
+        const previousMessage = await Demande.findById(req.params.id);
         const { statut, message, type } = req.body;
         const updateDemande = {
             statut,
-            message,
+            message: [...previousMessage.message, { de: user._id, a: previousMessage.possesseur, message: message }],
             type,
             dateMAJ: Date.now(),
         };
