@@ -12,7 +12,7 @@ const demandeSchema = mongoose.Schema({
   demandeur: { type: String, required: true },
   type: typeSchema,
   message: [{ de: String, a: String, message: String, date: { type: Date, default: Date.now() } }],
-  statut: { type: String, enum: ['pending', 'accepted', 'declined'], default: 'pending' },
+  statut: { type: String, enum: ['pending', 'accepted', 'declined', "read"], default: 'pending' },
   dateCreation: { type: Date, default: Date.now() },
   dateMAJ: Date,
 });

@@ -18,8 +18,9 @@ router.get('/', async (req, res) => {
 
 router.get('/:id', async (req, res) => {
     try {
-        const item = await Item.find({ _id: req.params.id });
-        res.json({ result: true, item });
+        const item = await Item.findById(req.params.id);
+        console.log(item)
+        res.json({ result: true, item: item });
     } catch (err) {
         console.log('erreur', err);
         res.json({ err })

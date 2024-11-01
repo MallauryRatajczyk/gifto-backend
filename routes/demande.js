@@ -70,8 +70,8 @@ router.get('/', async (req, res) => {
 
 router.get('/mesdemandes/:id', async (req, res) => {
     try {
-        const demandesRecus = await Demande.find({ possesseur: req.params.id }).populate('item');
-        const demandesFaites = await Demande.find({ demandeur: req.params.id }).populate('item');
+        const demandesRecus = await Demande.find({ possesseur: req.params.id });
+        const demandesFaites = await Demande.find({ demandeur: req.params.id });
         console.log(demandesFaites)
         let toutesDemandes = demandesFaites.concat(demandesRecus)
         if (!toutesDemandes) {
