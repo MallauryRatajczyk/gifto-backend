@@ -52,8 +52,6 @@ router.get('/:id', async (req, res) => {
     }
 });
 
-
-
 // récupérer toutes les demandes
 
 router.get('/', async (req, res) => {
