@@ -75,6 +75,28 @@ router.post('/:id/sousCategories', (req, res) => {
     });
 });
 
+// Ajouter une catégories et ses sous-catégories => nouvelle route
+
+router.post('/categorieAndsubcategories', (req, res) => {
+  const { categorie, sousCategorie } = req.body;
+
+  const newCategory = new Categorie({
+    nom: categorie,
+    sousCategories: sousCategorie.map(sub => ({ nom: sub }))
+  });
+
+  newCategory.save()
+    .then(category => {
+      res.json({ result: true, category });
+    })
+    .catch(error => {
+      res.json({ result: false, error: error.message });
+    });
+});
+
+
+
+
 module.exports = router;
 
 

@@ -6,3 +6,5 @@
 //yarn add --dev @babel/preset-env @babel/preset-react @babel/preset-typescript
 //yarn add --dev babel-jest
 //yarn add --dev @babel/plugin-syntax-jsx
+// yarn add -D supertest
+// yarn add uid2

@@ -1,12 +1,19 @@
 const mongoose = require('mongoose');
 
 
+const typeSchema = mongoose.Schema({
+  troc: { type: Boolean, default: false },
+  objetPropose: [String]
+})
+
 const demandeSchema = mongoose.Schema({
-  expediteur: {type: String, required: true },
-  destinataire: {type: String, required: true },
-  type:{troc:Boolean, objetPropose:[], required: true} ,
-  message: String,
-  statut: {type: String, enum: ['pending', 'accepted', 'declined'], default: 'pending'}, dateCreation: {type: Date, default: newDate()},
+  item: { type: mongoose.Schema.Types.ObjectId, ref: 'item' },
+  possesseur: { type: String, required: true },
+  demandeur: { type: String, required: true },
+  type: typeSchema,
+  message: [{ de: String, a: String, message: String, date: { type: Date, default: Date.now() } }],
+  statut: { type: String, enum: ['pending', 'accepted', 'declined', "read"], default: 'pending' },
+  dateCreation: { type: Date, default: Date.now() },
   dateMAJ: Date,
 });
 
