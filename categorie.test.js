@@ -25,3 +25,4 @@ it('GET /categories - should return all categories', async () => {
     expect(res.body.category.nom).toBe('sac'); // Check if the returned category has the expected name
     
 });
+
