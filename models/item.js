@@ -11,7 +11,7 @@ const itemSchema = mongoose.Schema({
     troc: { type: Boolean, default: false },
     proprietaire: { type: mongoose.Schema.Types.ObjectId, ref: 'users' },
     demande: { type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'demandes' }], default: [] },
-    favoris: { type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'editors' }], default: [] }
+    favoris: { type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'users' }], default: [] }
 });
 
 const Item = mongoose.model('items', itemSchema);
