@@ -8,7 +8,7 @@ const Categorie = require('../models/categorie');
 /* GET home page. */
 router.get('/', async (req, res) => {
     try {
-        const item = await Item.find();
+        const item = await Item.find().populate('categorie').populate('proprietaire');
         res.json({ result: true, item });
     } catch (err) {
         console.log(err);
@@ -18,7 +18,7 @@ router.get('/', async (req, res) => {
 
 router.get('/:id', async (req, res) => {
     try {
-        const item = await Item.findById(req.params.id);
+        const item = await Item.findById(req.params.id).populate('categorie').populate('proprietaire');
         console.log(item)
         res.json({ result: true, item: item });
     } catch (err) {
@@ -55,7 +55,7 @@ router.put('/:id', async (req, res) => {
         let troc = req.body.troc;
         /*let demande = req.body.demande;
         let favoris = req.body.favoris;*/
-        const item = await Item.findByIdAndUpdate(req.params.id, { name, description, image, dateMAJ, categorie, troc });
+        const item = await Item.findByIdAndUpdate(req.params.id, { name, description, image, dateMAJ, categorie, troc }).populate('categorie').populate('proprietaire');
         res.json({ result: true, item });
     } catch (err) {
         console.log('erreur', err);
