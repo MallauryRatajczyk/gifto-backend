@@ -72,12 +72,23 @@ router.get('/mesdemandes/:id', async (req, res) => {
     try {
         const demandesRecus = await Demande.find({ possesseur: req.params.id });
         const demandesFaites = await Demande.find({ demandeur: req.params.id });
-        console.log(demandesFaites)
         let toutesDemandes = demandesFaites.concat(demandesRecus)
         if (!toutesDemandes) {
             return res.json({ error: 'Requests not found' });
         }
         res.json({ result: true, demandes: toutesDemandes });
+    } catch (err) {
+        res.json({ error: err.message });
+    }
+});
+// récupérer toutes les demandes concernant un item
+router.get('/item/:id', async (req, res) => {
+    try {
+        const demandes = await Demande.find({ item: req.params.id });
+        if (!demandes) {
+            return res.json({ error: 'Requests not found' });
+        }
+        res.json({ result: true, demandes });
     } catch (err) {
         res.json({ error: err.message });
     }
