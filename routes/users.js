@@ -42,7 +42,6 @@ router.get('/:id', (req, res) => {
 
 // GET user/:tokenrenvoie un utilisateur en le recherchant par son token 
 router.get('/token/:token', (req, res) => {
-  console.log(req.params.token)
   User.findOne({ token: req.params.token }).then(data => {
     console.log(data)
     if (data) {

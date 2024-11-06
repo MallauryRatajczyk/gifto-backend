@@ -19,7 +19,16 @@ router.get('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
     try {
         const item = await Item.findById(req.params.id).populate('categorie').populate('proprietaire');
-        console.log(item)
+        res.json({ result: true, item: item });
+    } catch (err) {
+        console.log('erreur', err);
+        res.json({ err })
+    }
+});
+
+router.get('/user/:id', async (req, res) => {
+    try {
+        const item = await Item.find({ proprietaire: req.params.id }).populate('categorie').populate('proprietaire');
         res.json({ result: true, item: item });
     } catch (err) {
         console.log('erreur', err);
