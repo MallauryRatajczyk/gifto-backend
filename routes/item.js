@@ -15,17 +15,17 @@ router.get('/', async (req, res) => {
         res.json({ err })
     }
 });
-
+//Cherche un item en particulier
 router.get('/:id', async (req, res) => {
     try {
-        const item = await Item.findById(req.params.id).populate('categorie').populate('proprietaire');
-        res.json({ result: true, item: item });
+        const item = await Item.findById(req.params.id).populate('categorie').populate('proprietaire').populate('demande');
+        res.json({ result: true, item });
     } catch (err) {
         console.log('erreur', err);
         res.json({ err })
     }
 });
-
+//route pour chercher tous les objets d'un user
 router.get('/user/:id', async (req, res) => {
     try {
         const item = await Item.find({ proprietaire: req.params.id }).populate('categorie').populate('proprietaire');
