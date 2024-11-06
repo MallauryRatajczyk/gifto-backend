@@ -21,12 +21,13 @@ router.post('/', async (req, res) => {
             return;
         }
 
-        const { expediteur, destinataire, type, message } = req.body;
+        const { possesseur, demandeur, type, message, item } = req.body;
         const newDemande = new Demande({
-            expediteur,
-            destinataire,
+            demandeur,
+            item,
+            possesseur,
             type,
-            message,
+            message: [{ de: demandeur, a: possesseur, message: message }],
         });
 
         const newDoc = await newDemande.save();
@@ -45,13 +46,11 @@ router.get('/:id', async (req, res) => {
         if (!demande) {
             return res.json({ error: 'Request not found' });
         }
-        res.json(demande);
+        res.json({ result: true, demande: demande });
     } catch (err) {
         res.json({ error: err.message });
     }
 });
-
-
 
 // récupérer toutes les demandes
 
@@ -71,13 +70,25 @@ router.get('/', async (req, res) => {
 
 router.get('/mesdemandes/:id', async (req, res) => {
     try {
-        const demandesRecus = await Demande.find({ destinataire: req.params.id });
-        const demandesFaites = await Demande.find({ expediteur: req.params.id });
-        const toutesDemandes = demandesRecus + demandesFaites
+        const demandesRecus = await Demande.find({ possesseur: req.params.id });
+        const demandesFaites = await Demande.find({ demandeur: req.params.id });
+        let toutesDemandes = demandesFaites.concat(demandesRecus)
         if (!toutesDemandes) {
             return res.json({ error: 'Requests not found' });
         }
-        res.json(toutesDemandes);
+        res.json({ result: true, demandes: toutesDemandes });
+    } catch (err) {
+        res.json({ error: err.message });
+    }
+});
+// récupérer toutes les demandes concernant un item
+router.get('/item/:id', async (req, res) => {
+    try {
+        const demandes = await Demande.find({ item: req.params.id });
+        if (!demandes) {
+            return res.json({ error: 'Requests not found' });
+        }
+        res.json({ result: true, demandes });
     } catch (err) {
         res.json({ error: err.message });
     }
@@ -98,11 +109,11 @@ router.put('/:id', async (req, res) => {
             res.json({ result: false, error: 'User not found' });
             return;
         }
-
+        const previousMessage = await Demande.findById(req.params.id);
         const { statut, message, type } = req.body;
         const updateDemande = {
             statut,
-            message,
+            message: [...previousMessage.message, { de: user._id, a: previousMessage.possesseur, message: message }],
             type,
             dateMAJ: Date.now(),
         };
@@ -117,6 +128,35 @@ router.put('/:id', async (req, res) => {
     }
 });
 
+//mettre à jour une demande MALLAURY
+router.put('/read/:id', async (req, res) => {
+    if (!checkBody(req.body, ['token'])) {
+        res.json({ result: false, error: 'Missing or empty fields' });
+        return;
+    }
+
+    try {
+        const user = await User.findOne({ token: req.body.token });
+        if (!user) {
+            res.json({ result: false, error: 'User not found' });
+            return;
+        }
+        const { statut, type } = req.body;
+        const updateDemande = {
+            statut,
+            type,
+            dateMAJ: Date.now(),
+        };
+
+        const updatedDoc = await Demande.findByIdAndUpdate(req.params.id, updateDemande, { new: true });  //met à jour la demande en BDD et retourne une réponse
+        if (!updatedDoc) {
+            return res.json({ error: 'Request not found' });
+        }
+        res.json(updatedDoc);
+    } catch (err) {
+        res.json({ error: err.message });
+    }
+});
 
 
 // supprimer une demande
