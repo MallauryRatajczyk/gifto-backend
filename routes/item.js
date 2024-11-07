@@ -26,7 +26,7 @@ router.get('/:id', async (req, res) => {
     }
 });
 //route pour chercher tous les objets d'un user
-router.get('/user/:id', async (req, res) => {
+router.get('/user/byid/:id', async (req, res) => {
     try {
         const item = await Item.find({ proprietaire: req.params.id }).populate('categorie').populate('proprietaire');
         res.json({ result: true, item: item });
@@ -52,16 +52,16 @@ router.get('/user/myitems', (req, res) => {
   
         Item.find({ proprietaire: userData._id })
           .populate('categorie')
-          .populate('proprietaire')
+          //.populate('proprietaire')
           .then(items => {
             res.json({ result: true, item: items });
           })
           .catch(error => {
-            res.json({ result: false, error: error.message });
+            res.json({ result: false, error: error.message || error });
           });
       })
       .catch(error => {
-        res.json({ result: false, error: error.message });
+        res.json({ result: false, error: error.message  || error });
       });
   });
 
