@@ -41,17 +41,22 @@ router.post('/', async (req, res) => {
         const user = await User.findOne({ token: req.body.token });
         const userId = user._id;
         // Idée pour sous categorie const categorie = catTab.map((e) => { return await User.findOne({ name: e }) });
-        const categorie = await Categorie.findOne({ nom: req.body.categorie });
+        const categorie = await Categorie.findOne({ categorie: req.body.categorie });
         const catId = categorie._id;
-        const item = new Item({ name: req.body.name, description: req.body.description, image: req.body.image, categorie: req.body.categorie, proprietaire: userId, troc: req.body.troc, categorie: catId })
+        const sousCategorie = categorie.sousCategories.find(sub => sub === req.body.subCategorie);      // new Catherine
+        const item = new Item({ name: req.body.name, description: req.body.description, image: req.body.image, 
+        proprietaire: userId, troc: req.body.troc, categorie: catId, sousCategorie: sousCategorie })                // New souscategorie + deletion of : categorie: req.body.categorie
         await item.save()
-        const itemPop = await Item.findById(item._id.toString()).populate('categorie').populate('proprietaire')
+        const itemPop = await Item.findById(item._id.toString()).populate('categorie').populate('proprietaire');
         res.json({ result: true, itemPop });
     } catch (err) {
         console.log('erreur', err);
         res.json({ err })
+    
     }
 });
+
+
 
 router.put('/:id', async (req, res) => {
     try {

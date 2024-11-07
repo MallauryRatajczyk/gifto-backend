@@ -37,9 +37,10 @@ router.get('/:id', (req, res) => {
 // POST a new category
 // http://localhost:3000/categories/ (POST)
 router.post('/', (req, res) => {
-  const { nom, sousCategories } = req.body;
-  const newCategory = new Categorie({
-    nom,
+  const { categorie, sousCategories } = req.body;
+  const newCategory = new Categorie({                                  //update cath
+    // nom,
+    categorie,
     sousCategories
   });
 
