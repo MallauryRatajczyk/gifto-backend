@@ -26,7 +26,7 @@ router.get('/:id', async (req, res) => {
     }
 });
 //route pour chercher tous les objets d'un user
-router.get('/user/:id', async (req, res) => {
+router.get('/user/byid/:id', async (req, res) => {
     try {
         const item = await Item.find({ proprietaire: req.params.id }).populate('categorie').populate('proprietaire');
         res.json({ result: true, item: item });
@@ -35,6 +35,37 @@ router.get('/user/:id', async (req, res) => {
         res.json({ err })
     }
 });
+
+// by token 
+router.get('/user/myitems', (req, res) => {
+    if (!req.headers.authorization) {
+      return res.json({ result: false, error: 'No token provided' });
+    }
+  
+    const token = req.headers.authorization.split(' ')[1];
+    
+    User.findOne({ token })
+      .then(userData => {
+        if (!userData) {
+          return res.json({ result: false, error: 'User not found' });
+        }
+  
+        Item.find({ proprietaire: userData._id })
+          .populate('categorie')
+          //.populate('proprietaire')
+          .then(items => {
+            res.json({ result: true, item: items });
+          })
+          .catch(error => {
+            res.json({ result: false, error: error.message || error });
+          });
+      })
+      .catch(error => {
+        res.json({ result: false, error: error.message  || error });
+      });
+  });
+
+
 
 router.post('/', async (req, res) => {
     try {

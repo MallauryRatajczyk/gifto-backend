@@ -27,7 +27,7 @@ router.post('/', async (req, res) => {
             item,
             possesseur,
             type,
-            message: [{ de: demandeur, a: possesseur, message: message }],
+            message,
         });
 
         const newDoc = await newDemande.save();
